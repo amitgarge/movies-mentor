@@ -2,7 +2,10 @@
 NetFilix Design using Tailwind and using Firebase integrating GPT for Searching purpose.
 
 - Create React App
--Configured Tailwind CSS
+- Configured Tailwind CSS
+- Header 
+- Login Form
+- Sign Up Form
 
 # Features
 -Login/Signup
