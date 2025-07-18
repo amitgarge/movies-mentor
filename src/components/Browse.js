@@ -1,7 +1,25 @@
-const Browse = () => {
-  return (
-    <div>Browse</div>
-  )
-}
+import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
+import Header from "./Header";
+import MainContainer from "./MainContainer";
+import SecondaryContainer from "./SecondaryContainer";
 
-export default Browse
+const Browse = () => {
+  useNowPlayingMovies();
+  return (
+    <div>
+      <Header />
+      <MainContainer />
+      <SecondaryContainer />
+      {/**
+          Main Container
+            - VideoBackground
+            - VideoTitle
+          SecondaryContainer
+            - MovieList *n
+            - Cards *n
+       */}
+    </div>
+  );
+};
+
+export default Browse;
