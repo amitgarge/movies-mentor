@@ -7,14 +7,13 @@ const MainContainer = () => {
 
   if (!movies) return; //Early Return
 
-  const mainMovie = movies[0];
-  console.log(mainMovie);
+  const mainMovie = movies[0];  
 
-  const { original_title, overview } = mainMovie;
+  const { original_title, overview, id } = mainMovie;
 
   return (
     <div className="relative w-full h-[90vh]">
-      <VideoBackground />
+      <VideoBackground movieId={id}/>
       <VideoTitle title={original_title} overview={overview} />
     </div>
   );

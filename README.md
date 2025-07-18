@@ -24,6 +24,14 @@ NetFilix Design using Tailwind and using Firebase integrating GPT for Searching 
 - Fetch Movies from TMDB
   - Register TMDB API and create an app & get Access token
   - Get Data from TMDB 'Now Playing' movies list API
+- Use custome hook for 'Now Playing' movies
+- Create Movie Slice 
+- Update store with movies data
+- Planning for main container and secondary container
+- Fetch data for trailer video
+- Update store with trailer video data
+- embedded the YouTube Video and make it autoplay and mute
+
 
 # Features
 
