@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import logo from "../assets/Netflix-Logo.png";
-//import userIcon from "../assets/user.jpg";
+import logo from "../assets/movieMentor.png";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +41,7 @@ const Header = () => {
 
   return (
     <div className="absolute w-screen px-8 py-4 bg-gradient-to-b from-black/80 to-transparent flex justify-between items-center z-50">
-      <img className="w-44" src={logo} alt="Netflix-logo" />
+      <img className="w-44" src={logo} alt="MovieMentor-logo" />
       {user?.email && (
         <div className="relative">
           <img
@@ -52,15 +51,13 @@ const Header = () => {
             onClick={toggleMenu}
           />
           {showMenu && (
-            <div className="absolute right-0 mt-2 bg-black bg-opacity-90 text-white rounded shadow-lg py-2 z-50 w-32">
+            <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-md w-36 z-50">
               <button
-                className="block w-full text-left px-4 py-2 hover:bg-red-600 rounded"
+                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 rounded-md transition"
                 onClick={() => {
                   signOut(auth)
                     .then(() => {})
-                    .catch((error) => {
-                      navigate("/error");
-                    });
+                    .catch(() => navigate("/error"));
                 }}
               >
                 Sign Out

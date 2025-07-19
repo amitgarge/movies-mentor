@@ -1,5 +1,4 @@
 import Header from "./Header";
-import bg from "../assets/bg.jpg";
 import { useRef, useState } from "react";
 import { checkValidData } from "../utils/validate";
 import {
@@ -22,20 +21,17 @@ const Login = () => {
   const password = useRef(null);
 
   const handleButtonClick = () => {
-    //Validate the form data
     const emailVal = email.current?.value;
     const passVal = password.current?.value;
     const nameVal = isSignInForm ? null : name.current?.value;
 
     const message = checkValidData(emailVal, passVal, nameVal);
     setErrorMessage(message);
-
     if (message) return;
+
     if (!isSignInForm) {
-      //Sign Up Logic
       createUserWithEmailAndPassword(auth, emailVal, passVal)
         .then((userCredential) => {
-          // Signed up
           const user = userCredential.user;
           updateProfile(user, {
             displayName: nameVal,
@@ -44,66 +40,41 @@ const Login = () => {
             .then(() => {
               const { uid, displayName, email, photoURL } = auth.currentUser;
               dispatch(
-                addUser({
-                  uid: uid,
-                  email: email,
-                  displayName: displayName,
-                  photoURL: photoURL,
-                })
+                addUser({ uid, email, displayName, photoURL })
               );
             })
-            .catch((error) => {
-              setErrorMessage(error.message);
-            });
+            .catch((error) => setErrorMessage(error.message));
         })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          setErrorMessage(errorCode + "-" + errorMessage);
-        });
+        .catch((error) =>
+          setErrorMessage(error.code + "-" + error.message)
+        );
     } else {
-      //Sign In Logic
       signInWithEmailAndPassword(auth, emailVal, passVal)
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          setErrorMessage(errorCode + "-" + errorMessage);
-        });
+        .then((userCredential) => {})
+        .catch((error) =>
+          setErrorMessage(error.code + "-" + error.message)
+        );
     }
   };
 
-  const handleSignUpClick = () => {
-    setSignInForm(!isSignInForm);
-  };
+  const handleSignUpClick = () => setSignInForm(!isSignInForm);
 
   return (
     <div>
       <Header />
-      <div
-        className="relative w-full h-screen bg-cover bg-center"
-        style={{ backgroundImage: `url(${bg})` }}
-      >
-        <div className="absolute inset-0 bg-black opacity-60"></div>
-
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-black bg-opacity-80 text-white p-8 rounded-lg shadow-lg w-96">
-          <h2 className="text-2xl font-bold mb-6 text-center">
-            {isSignInForm ? "Sign In" : "Sign Up"}
+      <div className="w-full h-screen bg-gradient-to-br from-purple-100 to-blue-200 flex items-center justify-center">
+        <div className="bg-white shadow-xl rounded-2xl p-10 w-full max-w-md">
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+            {isSignInForm ? "Welcome Back" : "Create an Account"}
           </h2>
 
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="flex flex-col space-y-4"
-          >
+          <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
             {!isSignInForm && (
               <input
                 ref={name}
-                type="name"
+                type="text"
                 placeholder="Full Name"
-                className="p-2 bg-gray-800 text-white border border-gray-600 rounded placeholder-gray-400"
+                className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 required
               />
             )}
@@ -111,34 +82,36 @@ const Login = () => {
               ref={email}
               type="email"
               placeholder="Email"
-              autoComplete="email"
-              className="p-2 bg-gray-800 text-white border border-gray-600 rounded placeholder-gray-400"
+              className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />
             <input
               ref={password}
               type="password"
               placeholder="Password"
-              autoComplete="current-password"
-              className="p-2 bg-gray-800 text-white border border-gray-600 rounded placeholder-gray-400"
+              className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />
-            <p className="text-red-500">{errorMessage}</p>
+
+            {errorMessage && (
+              <p className="text-sm text-red-500 text-center">{errorMessage}</p>
+            )}
+
             <button
-              className="bg-red-600 text-white py-2 rounded hover:bg-red-700"
               onClick={handleButtonClick}
+              className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
             >
               {isSignInForm ? "Sign In" : "Sign Up"}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-300">
-            {isSignInForm ? "New to NetflixGPT? " : "Already have an account "}
+          <p className="text-center text-sm text-gray-600 mt-6">
+            {isSignInForm ? "New to Movie Mentor? " : "Already have an account? "}
             <span
               onClick={handleSignUpClick}
-              className="text-red-400 hover:underline cursor-pointer"
+              className="text-blue-600 hover:underline cursor-pointer"
             >
-              {isSignInForm ? "Sign up now" : "Sign In"}
+              {isSignInForm ? "Sign up" : "Sign in"}
             </span>
           </p>
         </div>

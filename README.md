@@ -1,6 +1,5 @@
-# netflix-gpt
-
-NetFilix Design using Tailwind and using Firebase integrating GPT for Searching purpose.
+# movie-mentor
+Movie Mentor Design using Tailwind and using Firebase integrating GPT for Searching purpose.
 
 - Create React App
 - Configured Tailwind CSS
@@ -44,6 +43,6 @@ NetFilix Design using Tailwind and using Firebase integrating GPT for Searching 
     - Title and description
     - Moview Suggestions
       - MovieLists \*n
-- Netflix GPT
+- Movie Mentor
   - Search Bar
   - Movie Suggestions
