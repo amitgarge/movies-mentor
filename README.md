@@ -30,6 +30,11 @@ Movie Mentor Design using Tailwind and using Firebase integrating GPT for Search
 - Fetch data for trailer video
 - Update store with trailer video data
 - embedded the YouTube Video and make it autoplay and mute
+- Build Secondary Component
+- Build Movie List
+- Build Movie Card
+- TMDB Image CDN URL
+- usePopularMovies custom hooks
 
 
 # Features
