@@ -5,9 +5,16 @@ export const API_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwYTkzYmFjODBjYzQzYTIyYjAwYmUwMzBhY2M4ZDI1MiIsIm5iZiI6MTc1MjEzMTk2NS42NzM5OTk4LCJzdWIiOiI2ODZmNjk3ZGRkMjVlZGY2MzM3MDQxYjgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.-3ViCiJSnTUWuWhoXyKP98coccymOk_m6VcT23Mtnl4",
+    Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
   },
 };
 
 export const IMAGE_CDN_URL = "https://image.tmdb.org/t/p/w500";
+
+export const SUPPORTED_LANGUAGES = [
+  { identifier: "en", name: "English" },
+  { identifier: "hi", name: "Hindi" },
+  { identifier: "sp", name: "Spanish" },
+];
+
+export const OPEN_AI_KEY = process.env.REACT_APP_OPEN_AI_KEY;

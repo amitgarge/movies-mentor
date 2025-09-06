@@ -36,6 +36,14 @@ Movie Mentor Design using Tailwind and using Firebase integrating GPT for Search
 - TMDB Image CDN URL
 - usePopularMovies custom hooks
 
+# Search Feature
+- Search Page
+  - Search Bar
+    - Multi-Lingual Feature
+  - Movie Suggestions Page
+    - Open AI APIs
+
+
 
 # Features
 
