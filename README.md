@@ -35,15 +35,18 @@ Movie Mentor Design using Tailwind and using Firebase integrating GPT for Search
 - Build Movie Card
 - TMDB Image CDN URL
 - usePopularMovies custom hooks
+- adding .env file
+- Responsive UI changes
 
 # Search Feature
 - Search Page
   - Search Bar
     - Multi-Lingual Feature
   - Movie Suggestions Page
-    - Open AI APIs
-
-
+    - Open AI APIs and Keys
+    - Memoization
+    - Fetched Movies Suggestions from Tmdb
+    - resused movieList Component to make movie suggestions conatainer
 
 # Features
 

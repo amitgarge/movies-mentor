@@ -3,7 +3,7 @@ import MovieSuggestions from "./MovieSuggestions";
 
 const Search = () => {
   return (
-    <div className="pt-12 bg-gradient-to-br from-purple-100 to-blue-200">
+    <div className="pt-12 bg-gradient-to-br from-purple-100 to-blue-200 h-screen object-cover">
       <SearchBar />
       <MovieSuggestions />
     </div>

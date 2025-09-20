@@ -53,11 +53,11 @@ const SearchBar = () => {
         <input
           ref={searchText}
           type="text"
-          className="flex-grow px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none"
+          className="flex-grow px-4 py-3 text-xs sm:text-base lg:text-base text-gray-700 placeholder-gray-400 focus:outline-none"
           placeholder={lang[langKey].searchPlaceHolder}
         />
         <button
-          className="px-6 bg-red-600 text-white font-semibold hover:bg-red-700 transition"
+          className="px-6 bg-red-600 text-white font-semibold hover:bg-red-700 transition text-xs sm:text-base lg:text-base"
           onClick={handleSearchClick}
         >
           {lang[langKey].search}

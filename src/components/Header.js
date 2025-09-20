@@ -30,20 +30,18 @@ const Header = () => {
         const { uid, displayName, email, photoURL } = user;
         dispatch(
           addUser({
-            uid: uid,
-            email: email,
-            displayName: displayName,
-            photoURL: photoURL,
+            uid,
+            email,
+            displayName,
+            photoURL,
           })
         );
         navigate("/browse");
       } else {
-        // User is signed out
         dispatch(removeUser());
         navigate("/");
       }
     });
-    //Unsubscribe from the onAuthStateChanged when component unmounts
     return () => unsubscribe();
   }, [dispatch, navigate]);
 
@@ -52,51 +50,68 @@ const Header = () => {
   };
 
   return (
-    <div className="absolute w-screen px-8 py-4 bg-gradient-to-b from-black/80 to-transparent flex justify-between items-center z-50">
-      <img className="w-44" src={logo} alt="MovieMentor-logo" />
+    <header
+      className="absolute top-0 left-0 w-full px-4 sm:px-6 py-3 
+                   bg-gradient-to-b from-black/80 to-transparent 
+                   flex justify-between items-center z-50"
+    >
+      {/* Logo */}
+      <img className="w-24 sm:w-32 lg:w-44" src={logo} alt="MovieMentor-logo" />
+
+      {/* Right-side actions */}
       {user?.email && (
-        <div className="relative flex items-center space-x-8">
+        <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
+          {/* Language dropdown */}
           {showSearch && (
-            <select
-              className="p-2 bg-gray-900 text-white"
-              onChange={handleLanguageChange}
-            >
-              {SUPPORTED_LANGUAGES.map((lang) => (
-                <option key={lang.identifier} value={lang.identifier}>
-                  {lang.name}
-                </option>
-              ))}
-            </select>
+          <select
+            className="p-1.5 sm:p-2 bg-gray-900 text-white rounded-md 
+                   text-xs sm:text-sm lg:text-base"
+            onChange={handleLanguageChange}
+          >
+            {SUPPORTED_LANGUAGES.map((lang) => (
+              <option key={lang.identifier} value={lang.identifier}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
           )}
+
+          {/* Search/Home Button */}
           <button
-            className="text-white hover:underline bg-purple-800 px-6 py-2 rounded-xl"
+            className="text-white bg-purple-700 hover:bg-purple-800 
+                   px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg 
+                   text-xs sm:text-sm lg:text-base"
             onClick={handleSearchClick}
           >
             {showSearch ? "Home" : "Search"}
           </button>
-          <img
-            src={user?.photoURL}
-            alt="user"
-            className="w-10 h-10 rounded-full cursor-pointer border border-gray-300"
-            onClick={toggleMenu}
-          />
-          {showMenu && (
-            <div className="absolute right-0 top-14 mt-2 bg-white border border-gray-200 rounded-lg shadow-md w-36 z-50">
-              <button
-                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 rounded-md transition"
-                onClick={() => {
-                  signOut(auth)
-                    .then(() => {})
-                    .catch(() => navigate("/error"));
-                }}
-              >
-                Sign Out
-              </button>
-            </div>
-          )}
+
+          {/* Profile */}
+          <div className="relative">
+            <img
+              src={user?.photoURL}
+              alt="user"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full cursor-pointer border border-gray-300"
+              onClick={toggleMenu}
+            />
+            {showMenu && (
+              <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-md w-32 sm:w-36 z-50">
+                <button
+                  className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 rounded-md transition"
+                  onClick={() => {
+                    signOut(auth)
+                      .then(() => {})
+                      .catch(() => navigate("/error"));
+                  }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </div>
+    </header>
   );
 };
 
