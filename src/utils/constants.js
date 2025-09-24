@@ -18,3 +18,7 @@ export const SUPPORTED_LANGUAGES = [
 ];
 
 export const OPEN_AI_KEY = process.env.REACT_APP_OPEN_AI_KEY;
+
+export const TMDB_URL = "https://api.themoviedb.org/3/search/movie?query=";
+
+export const TMDB_URL_OPTIONS = "&include_adult=false&language=en-US&page=1";
