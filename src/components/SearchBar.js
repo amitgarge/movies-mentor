@@ -4,13 +4,12 @@ import { useRef } from "react";
 import openAI from "../utils/openAI";
 import { API_OPTIONS, TMDB_URL, TMDB_URL_OPTIONS } from "../utils/constants";
 import { addMovieSearchResults, setSearchLoading } from "../utils/searchSlice";
-import toast from "react-hot-toast"; // ✅ new import
+import toast from "react-hot-toast";
 
 const SearchBar = () => {
   const searchText = useRef(null);
   const dispatch = useDispatch();
 
-  // ✅ Get loading from Redux, not local state
   const loading = useSelector((store) => store.search.loading);
   const langKey = useSelector((store) => store.config.lang);
 
@@ -22,8 +21,7 @@ const SearchBar = () => {
 
   const isMovieQuery = (query) => {
     if (!query || query.trim().length < 2) return false;
-    // Allow letters, numbers, spaces, colon, dash, dot
-    const validPattern = /^[a-zA-Z0-9\s:.\-]+$/;
+    const validPattern = /^[a-zA-Z0-9\s:.-]+$/;
     return validPattern.test(query);
   };
 
@@ -32,12 +30,12 @@ const SearchBar = () => {
     if (!query) return;
 
     if (!isMovieQuery(query)) {
-      toast.error("❌ Please enter a valid movie name.");
+      toast.error(lang[langKey].invalidMovieName);
       return;
     }
 
-    dispatch(addMovieSearchResults(null)); // clears old results so shimmer shows
-    dispatch(setSearchLoading(true)); // start shimmer
+    dispatch(addMovieSearchResults(null));
+    dispatch(setSearchLoading(true));
 
     const openAIQuery =
       "Act as a movie recommendation system and suggest some movies for the query: " +
@@ -54,7 +52,7 @@ const SearchBar = () => {
         openAIResults.choices?.[0]?.message?.content.split(", ") || [];
 
       if (movies.length === 0) {
-        toast.error("⚠️ No movies found. Try another title.");
+        toast.error(lang[langKey].noMoviesFound);
         return;
       }
 
@@ -65,12 +63,12 @@ const SearchBar = () => {
         addMovieSearchResults({ movieNames: movies, movieResults: tmdbResults })
       );
 
-      toast.success("✅ Movies loaded successfully!");
+      toast.success(lang[langKey].moviesLoaded);
     } catch (err) {
       console.error("Search error:", err);
-      toast.error("🚨 Something went wrong. Please try again.");
+      toast.error(lang[langKey].searchError);
     } finally {
-      dispatch(setSearchLoading(false)); // stop shimmer
+      dispatch(setSearchLoading(false));
     }
   };
 
@@ -89,7 +87,7 @@ const SearchBar = () => {
         <button
           className="px-6 bg-red-600 text-white font-semibold hover:bg-red-700 transition text-xs sm:text-base lg:text-base flex items-center justify-center min-w-[90px]"
           onClick={handleSearchClick}
-          disabled={loading} // ✅ use redux loading
+          disabled={loading}
         >
           {loading ? (
             <div

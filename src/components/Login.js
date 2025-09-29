@@ -7,17 +7,19 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { PHOTO } from "../utils/constants";
 import { getAuthErrorMessage } from "../utils/firebaseErrors";
 import toast from "react-hot-toast"; // ✅ Toasts
+import lang from "../utils/languageConstants";
 
 const Login = () => {
   const [isSignInForm, setSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false); // ✅ loading state
   const dispatch = useDispatch();
+  const langKey = useSelector((store) => store.config.lang); // ✅ current language
 
   const name = useRef(null);
   const email = useRef(null);
@@ -47,7 +49,7 @@ const Login = () => {
             .then(() => {
               const { uid, displayName, email, photoURL } = auth.currentUser;
               dispatch(addUser({ uid, email, displayName, photoURL }));
-              toast.success("🎉 Account created successfully!");
+              toast.success("🎉 " + lang[langKey].accountCreated);
             })
             .catch((error) => {
               const msg = getAuthErrorMessage(error.code);
@@ -65,7 +67,7 @@ const Login = () => {
       // ✅ Sign In
       signInWithEmailAndPassword(auth, emailVal, passVal)
         .then(() => {
-          toast.success("✅ Signed in successfully!");
+          toast.success("✅ " + lang[langKey].signedIn);
         })
         .catch((error) => {
           const msg = getAuthErrorMessage(error.code);
@@ -84,7 +86,9 @@ const Login = () => {
       <div className="w-full h-screen bg-gradient-to-br from-purple-100 to-blue-200 flex items-center justify-center">
         <div className="bg-white shadow-xl rounded-2xl p-10 w-full max-w-md">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-            {isSignInForm ? "Welcome Back" : "Create an Account"}
+            {isSignInForm
+              ? lang[langKey].welcomeBack
+              : lang[langKey].createAccount}
           </h2>
 
           <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
@@ -92,7 +96,7 @@ const Login = () => {
               <input
                 ref={name}
                 type="text"
-                placeholder="Full Name"
+                placeholder={lang[langKey].fullName}
                 className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 required
               />
@@ -100,14 +104,14 @@ const Login = () => {
             <input
               ref={email}
               type="email"
-              placeholder="Email"
+              placeholder={lang[langKey].email}
               className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />
             <input
               ref={password}
               type="password"
-              placeholder="Password"
+              placeholder={lang[langKey].password}
               className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />
@@ -129,22 +133,22 @@ const Login = () => {
                   className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
                 ></div>
               ) : isSignInForm ? (
-                "Sign In"
+                lang[langKey].signIn
               ) : (
-                "Sign Up"
+                lang[langKey].signUp
               )}
             </button>
           </form>
 
           <p className="text-center text-sm text-gray-600 mt-6">
             {isSignInForm
-              ? "New to Movie Mentor? "
-              : "Already have an account? "}
+              ? lang[langKey].newToMovieMentor + " "
+              : lang[langKey].alreadyHaveAccount + " "}
             <span
               onClick={handleSignUpClick}
               className="text-blue-600 hover:underline cursor-pointer"
             >
-              {isSignInForm ? "Sign up" : "Sign in"}
+              {isSignInForm ? lang[langKey].signUp : lang[langKey].signIn}
             </span>
           </p>
         </div>

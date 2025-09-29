@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import MovieList from "./MovieList";
 import ShimmerMovieCard from "./ShimmerMovieCard";
+import lang from "../utils/languageConstants";
 
 const ShimmerTitle = () => (
   <div className="w-32 h-5 bg-gray-300 rounded-md animate-pulse mb-2" />
@@ -10,6 +11,7 @@ const MovieSuggestions = () => {
   const { movieNames, movieResults, loading } = useSelector(
     (store) => store.search
   );
+  const langKey = useSelector((store) => store.config.lang);
 
   // 1. Initial state → show nothing until user searches
   if (!loading && !movieNames) {
@@ -21,7 +23,7 @@ const MovieSuggestions = () => {
     return (
       <div className="p-4 m-4">
         <h1 className="text-black text-xl md:text-2xl font-semibold mb-4">
-          Loading results...
+          {lang[langKey].loadingResults}
         </h1>
         {Array(3)
           .fill("")
@@ -56,10 +58,10 @@ const MovieSuggestions = () => {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-gray-700">
       <p className="text-lg md:text-xl font-medium mb-4">
-        No results found 👀
+        {lang[langKey].noResults}
       </p>
       <p className="text-sm md:text-base text-gray-500">
-        Try searching with a different title or keyword.
+        {lang[langKey].tryAgain}
       </p>
     </div>
   );

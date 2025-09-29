@@ -8,6 +8,7 @@ import { addUser, removeUser } from "../utils/userSlice";
 import { toggleSearchView } from "../utils/searchSlice";
 import { SUPPORTED_LANGUAGES } from "../utils/constants";
 import { changeLanguage } from "../utils/configSlice";
+import lang from "../utils/languageConstants";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -15,6 +16,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
   const showSearch = useSelector((store) => store.search.showSearch);
+  const langKey = useSelector((store) => store.config.lang); // ✅ current language
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -61,21 +63,23 @@ const Header = () => {
       {/* Right-side actions */}
       {user?.email && (
         <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
-          {/* Language dropdown */}
-          {showSearch && (
           <select
-            className="p-1.5 sm:p-2 bg-gray-900 text-white rounded-md 
-                   text-xs sm:text-sm lg:text-base"
+            aria-label={lang[langKey].language}
+            className="p-1.5 sm:p-2 bg-white text-gray-800 border border-gray-300 rounded-md 
+             shadow-md text-xs sm:text-sm lg:text-base cursor-pointer
+             focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
             onChange={handleLanguageChange}
           >
             {SUPPORTED_LANGUAGES.map((lang) => (
-              <option key={lang.identifier} value={lang.identifier}>
+              <option
+                key={lang.identifier}
+                value={lang.identifier}
+                className="text-gray-800 bg-white hover:bg-purple-100 cursor-pointer"
+              >
                 {lang.name}
               </option>
             ))}
           </select>
-          )}
-
           {/* Search/Home Button */}
           <button
             className="text-white bg-purple-700 hover:bg-purple-800 
@@ -83,9 +87,8 @@ const Header = () => {
                    text-xs sm:text-sm lg:text-base"
             onClick={handleSearchClick}
           >
-            {showSearch ? "Home" : "Search"}
+            {showSearch ? lang[langKey].home : lang[langKey].search}
           </button>
-
           {/* Profile */}
           <div className="relative">
             <img
@@ -104,7 +107,7 @@ const Header = () => {
                       .catch(() => navigate("/error"));
                   }}
                 >
-                  Sign Out
+                  {lang[langKey].signOut}
                 </button>
               </div>
             )}
