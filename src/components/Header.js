@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import logo from "../assets/movieMentor.png";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
@@ -16,10 +16,12 @@ const Header = () => {
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
   const showSearch = useSelector((store) => store.search.showSearch);
-  const langKey = useSelector((store) => store.config.lang); // ✅ current language
+  const langKey = useSelector((store) => store.config.lang);
+
+  const lastUserRef = useRef(undefined); // <-- store last processed uid (or NO_USER)
 
   const toggleMenu = () => {
-    setShowMenu(!showMenu);
+    setShowMenu((s) => !s);
   };
 
   const handleSearchClick = () => {
@@ -27,23 +29,35 @@ const Header = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const { uid, displayName, email, photoURL } = user;
-        dispatch(
-          addUser({
-            uid,
-            email,
-            displayName,
-            photoURL,
-          })
-        );
+    // helper to convert user -> string id for comparison
+    const getUidKey = (userObj) => (userObj ? userObj.uid : "NO_USER");
+
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      const uidKey = getUidKey(currentUser);
+
+      // If the incoming event has the same uid as the last processed, ignore it.
+      // This prevents duplicate runs caused by React StrictMode/dev double-effects.
+      if (lastUserRef.current === uidKey) {
+        // console.debug("Duplicate auth event ignored:", uidKey);
+        return;
+      }
+
+      // Save this uid as last processed
+      lastUserRef.current = uidKey;
+
+      // Debug log (remove in production if you want)
+      console.debug("Auth state changed:", currentUser ? "logged in" : "logged out");
+
+      if (currentUser) {
+        const { uid, displayName, email, photoURL } = currentUser;
+        dispatch(addUser({ uid, email, displayName, photoURL }));
         navigate("/browse");
       } else {
         dispatch(removeUser());
         navigate("/");
       }
     });
+
     return () => unsubscribe();
   }, [dispatch, navigate]);
 
@@ -63,23 +77,26 @@ const Header = () => {
       {/* Right-side actions */}
       {user?.email && (
         <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
+          {/* Language Dropdown */}
           <select
             aria-label={lang[langKey].language}
             className="p-1.5 sm:p-2 bg-white text-gray-800 border border-gray-300 rounded-md 
              shadow-md text-xs sm:text-sm lg:text-base cursor-pointer
              focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
             onChange={handleLanguageChange}
+            value={langKey}
           >
-            {SUPPORTED_LANGUAGES.map((lang) => (
+            {SUPPORTED_LANGUAGES.map((l) => (
               <option
-                key={lang.identifier}
-                value={lang.identifier}
+                key={l.identifier}
+                value={l.identifier}
                 className="text-gray-800 bg-white hover:bg-purple-100 cursor-pointer"
               >
-                {lang.name}
+                {l.name}
               </option>
             ))}
           </select>
+
           {/* Search/Home Button */}
           <button
             className="text-white bg-purple-700 hover:bg-purple-800 
@@ -89,6 +106,7 @@ const Header = () => {
           >
             {showSearch ? lang[langKey].home : lang[langKey].search}
           </button>
+
           {/* Profile */}
           <div className="relative">
             <img
@@ -102,9 +120,8 @@ const Header = () => {
                 <button
                   className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 rounded-md transition"
                   onClick={() => {
-                    signOut(auth)
-                      .then(() => {})
-                      .catch(() => navigate("/error"));
+                    // sign out (this triggers onAuthStateChanged -> uid changes -> processed)
+                    signOut(auth).catch(() => navigate("/error"));
                   }}
                 >
                   {lang[langKey].signOut}

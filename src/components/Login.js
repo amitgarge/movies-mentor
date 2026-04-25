@@ -17,28 +17,32 @@ import lang from "../utils/languageConstants";
 const Login = () => {
   const [isSignInForm, setSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false); // ✅ loading state
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const langKey = useSelector((store) => store.config.lang); // ✅ current language
+  const langKey = useSelector((store) => store.config.lang);
 
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
+
+  // ✅ Toast IDs to prevent duplicates
+  const LOGIN_SUCCESS_TOAST_ID = "login-success";
+  const SIGNUP_SUCCESS_TOAST_ID = "signup-success";
 
   const handleButtonClick = async () => {
     const emailVal = email.current?.value;
     const passVal = password.current?.value;
     const nameVal = isSignInForm ? null : name.current?.value;
 
-    // ✅ Client-side validation
+    // ✅ Basic validation
     const message = checkValidData(emailVal, passVal, nameVal);
     setErrorMessage(message);
     if (message) return;
 
-    setLoading(true); // start loading
+    setLoading(true);
 
     if (!isSignInForm) {
-      // ✅ Sign Up
+      // ✅ Sign Up flow
       createUserWithEmailAndPassword(auth, emailVal, passVal)
         .then((userCredential) => {
           const user = userCredential.user;
@@ -49,7 +53,9 @@ const Login = () => {
             .then(() => {
               const { uid, displayName, email, photoURL } = auth.currentUser;
               dispatch(addUser({ uid, email, displayName, photoURL }));
-              toast.success("🎉 " + lang[langKey].accountCreated);
+              toast.success("🎉 " + lang[langKey].accountCreated, {
+                id: SIGNUP_SUCCESS_TOAST_ID,
+              });
             })
             .catch((error) => {
               const msg = getAuthErrorMessage(error.code);
@@ -64,10 +70,13 @@ const Login = () => {
         })
         .finally(() => setLoading(false));
     } else {
-      // ✅ Sign In
+      // ✅ Sign In flow
       signInWithEmailAndPassword(auth, emailVal, passVal)
         .then(() => {
-          toast.success("✅ " + lang[langKey].signedIn);
+          console.log("Toast fired from Login.js");
+          toast.success("✅ " + lang[langKey].signedIn, {
+            id: LOGIN_SUCCESS_TOAST_ID,
+          });
         })
         .catch((error) => {
           const msg = getAuthErrorMessage(error.code);
@@ -123,7 +132,7 @@ const Login = () => {
 
             <button
               onClick={handleButtonClick}
-              disabled={loading} // disable while loading
+              disabled={loading}
               className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition flex items-center justify-center"
             >
               {loading ? (
@@ -142,7 +151,7 @@ const Login = () => {
 
           <p className="text-center text-sm text-gray-600 mt-6">
             {isSignInForm
-              ? lang[langKey].newToMovieMentor + " "
+              ? lang[langKey].newToApp + " "
               : lang[langKey].alreadyHaveAccount + " "}
             <span
               onClick={handleSignUpClick}

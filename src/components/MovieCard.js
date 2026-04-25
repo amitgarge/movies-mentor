@@ -1,18 +1,52 @@
+import { useEffect, useRef, useState, memo } from "react";
 import { IMAGE_CDN_URL } from "../utils/constants";
 
 const MovieCard = ({ posterPath }) => {
-  if (!posterPath) return null;
+  const [isVisible, setIsVisible] = useState(false);
+  const imgRef = useRef(null);
+
+  // 🎯 Lazy loading logic (always called → safe for hooks)
+  useEffect(() => {
+    const imgEl = imgRef.current;
+    if (!imgEl) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(imgEl);
+    return () => observer.disconnect();
+  }, []);
+
+  // 🚫 Skip rendering completely if no posterPath (after hook)
+  if (!posterPath) return <></>;
 
   return (
-    <div className="w-48 md:w-60 hover:scale-105 transition-transform duration-300">
-      <img
-        src={IMAGE_CDN_URL + posterPath}
-        alt="Movie Poster"
-        className="rounded-lg shadow-md"
-      />
+    <div
+      ref={imgRef}
+      className="w-36 sm:w-44 md:w-52 lg:w-60 hover:scale-105 transition-transform duration-300"
+    >
+      {isVisible ? (
+        <img
+          src={IMAGE_CDN_URL + posterPath}
+          alt="Movie Poster"
+          loading="lazy"
+          className="rounded-lg shadow-md"
+        />
+      ) : (
+        // ✨ Shimmer only while the image is loading
+        <div className="w-full h-56 bg-gray-300 animate-pulse rounded-lg"></div>
+      )}
     </div>
   );
 };
 
-
-export default MovieCard;
+// ⚡ Prevent unnecessary re-renders
+export default memo(MovieCard);
