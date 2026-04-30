@@ -79,7 +79,7 @@ export const parseMovieNamesFromAIResponse = (response = "") => {
     .split(/\n|,/)
     .map((movie) =>
       movie
-        .replace(/^\s*(\d+[\).:-]?|[-*])\s*/, "")
+        .replace(/^\s*(\d+[).:-]?|[-*])\s*/, "")
         .replace(/^["']|["']$/g, "")
         .trim(),
     )

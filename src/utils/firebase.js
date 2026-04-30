@@ -14,10 +14,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-let analytics;
 isSupported().then((yes) => {
   if (yes) {
-    analytics = getAnalytics(app);
+    getAnalytics(app);
   }
 });
 export const auth = getAuth(app);

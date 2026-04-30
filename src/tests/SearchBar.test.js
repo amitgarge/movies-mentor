@@ -4,19 +4,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import SearchBar from "../components/SearchBar";
 import configReducer from "../utils/configSlice";
 import searchReducer from "../utils/searchSlice";
-import openAI from "../utils/openAI";
 import toast from "react-hot-toast";
-
-jest.mock("../utils/openAI", () => ({
-  __esModule: true,
-  default: {
-    chat: {
-      completions: {
-        create: jest.fn(),
-      },
-    },
-  },
-}));
 
 jest.mock("react-hot-toast", () => ({
   __esModule: true,
@@ -46,6 +34,7 @@ function renderWithStore(preloadedState) {
 }
 
 afterEach(() => {
+  global.fetch?.mockClear?.();
   jest.clearAllMocks();
   jest.useRealTimers();
 });
@@ -62,8 +51,9 @@ test("renders search input", () => {
   ).toBeInTheDocument();
 });
 
-test("blocks meaningless queries before calling OpenAI", () => {
+test("blocks meaningless queries before calling backend", () => {
   jest.useFakeTimers();
+  global.fetch = jest.fn();
 
   const { store } = renderWithStore({
     config: { lang: "en" },
@@ -81,14 +71,15 @@ test("blocks meaningless queries before calling OpenAI", () => {
     jest.advanceTimersByTime(700);
   });
 
-  expect(openAI.chat.completions.create).not.toHaveBeenCalled();
+  expect(global.fetch).not.toHaveBeenCalled();
   expect(toast.error).toHaveBeenCalledWith("Please enter a valid movie name.");
   expect(store.getState().search.movieNames).toEqual([]);
   expect(store.getState().search.movieResults).toEqual([]);
 });
 
-test("blocks adult-content queries before calling OpenAI", () => {
+test("blocks adult-content queries before calling backend", () => {
   jest.useFakeTimers();
+  global.fetch = jest.fn();
 
   const { store } = renderWithStore({
     config: { lang: "en" },
@@ -106,7 +97,7 @@ test("blocks adult-content queries before calling OpenAI", () => {
     jest.advanceTimersByTime(700);
   });
 
-  expect(openAI.chat.completions.create).not.toHaveBeenCalled();
+  expect(global.fetch).not.toHaveBeenCalled();
   expect(toast.error).toHaveBeenCalledWith(
     "Adult content searches are not supported.",
   );
