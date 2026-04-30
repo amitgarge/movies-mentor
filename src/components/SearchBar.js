@@ -10,6 +10,12 @@ import {
 } from "../utils/constants";
 import { addMovieSearchResults, setSearchLoading } from "../utils/searchSlice";
 import toast from "react-hot-toast";
+import {
+  filterValidTMDBMovies,
+  hasAdultContentIntent,
+  isMovieQuery,
+  parseMovieNamesFromAIResponse,
+} from "../utils/searchGuards";
 
 const SearchBar = () => {
   const searchText = useRef(null);
@@ -21,15 +27,12 @@ const SearchBar = () => {
   const cache = useRef({});
 
   const searchMovieTMDB = async (movie) => {
-    const data = await fetch(TMDB_URL + movie + TMDB_URL_OPTIONS, API_OPTIONS);
+    const data = await fetch(
+      TMDB_URL + encodeURIComponent(movie) + TMDB_URL_OPTIONS,
+      API_OPTIONS,
+    );
     const json = await data.json();
-    return json.results;
-  };
-
-  const isMovieQuery = (query) => {
-    if (!query || query.trim().length < 2) return false;
-    const validPattern = /^[a-zA-Z0-9\s:.-]+$/;
-    return validPattern.test(query);
+    return filterValidTMDBMovies(json.results);
   };
 
   const parseQuery = (query) => {
@@ -79,7 +82,12 @@ const SearchBar = () => {
     const data = await fetch(url, API_OPTIONS);
     const json = await data.json();
 
-    return json.results;
+    return filterValidTMDBMovies(json.results);
+  };
+
+  const showNoResults = () => {
+    dispatch(addMovieSearchResults({ movieNames: [], movieResults: [] }));
+    dispatch(setSearchLoading(false));
   };
 
   const performSearch = async (query) => {
@@ -119,9 +127,11 @@ const SearchBar = () => {
         }
 
         // Still no movies found
+        finalMovies = filterValidTMDBMovies(finalMovies);
+
         if (!finalMovies || finalMovies.length === 0) {
           toast.error(lang[langKey].noMoviesFound);
-          dispatch(setSearchLoading(false));
+          showNoResults();
           return;
         }
 
@@ -156,21 +166,41 @@ const SearchBar = () => {
         model: "gpt-3.5-turbo",
       });
 
-      const movies =
-        openAIResults.choices?.[0]?.message?.content.split(", ") || [];
+      const movies = parseMovieNamesFromAIResponse(
+        openAIResults.choices?.[0]?.message?.content,
+      );
 
       if (movies.length === 0) {
         toast.error(lang[langKey].noMoviesFound);
-        dispatch(setSearchLoading(false));
+        showNoResults();
         return;
       }
 
       const promiseArray = movies.map((movie) => searchMovieTMDB(movie));
       const tmdbResults = await Promise.all(promiseArray);
+      const validGroups = movies.reduce(
+        (acc, movie, index) => {
+          const results = filterValidTMDBMovies(tmdbResults[index]);
+
+          if (results.length > 0) {
+            acc.movieNames.push(movie);
+            acc.movieResults.push(results);
+          }
+
+          return acc;
+        },
+        { movieNames: [], movieResults: [] },
+      );
+
+      if (validGroups.movieResults.length === 0) {
+        toast.error(lang[langKey].noMoviesFound);
+        showNoResults();
+        return;
+      }
 
       const resultData = {
-        movieNames: movies,
-        movieResults: tmdbResults,
+        movieNames: validGroups.movieNames,
+        movieResults: validGroups.movieResults,
       };
 
       dispatch(addMovieSearchResults(resultData));
@@ -197,11 +227,26 @@ const SearchBar = () => {
     // Minimum length check
     if (query.length < 3) return;
 
-    if (!isMovieQuery(query)) return;
-
     // Clear previous debounce
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
+    }
+
+    if (!isMovieQuery(query)) {
+      debounceTimer.current = setTimeout(() => {
+        const latestValue = searchText.current.value.trim();
+
+        if (latestValue !== query) return;
+
+        showNoResults();
+        toast.error(
+          hasAdultContentIntent(query)
+            ? lang[langKey].adultContentNotAllowed
+            : lang[langKey].invalidMovieName,
+        );
+      }, 700);
+
+      return;
     }
 
     debounceTimer.current = setTimeout(() => {

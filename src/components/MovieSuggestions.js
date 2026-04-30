@@ -61,7 +61,7 @@ const MovieSuggestions = () => {
         {lang[langKey].noResults}
       </p>
       <p className="text-sm md:text-base text-gray-500">
-        {lang[langKey].tryAgain}
+        {lang[langKey].tryAnother}
       </p>
     </div>
   );
