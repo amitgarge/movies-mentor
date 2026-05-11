@@ -9,7 +9,6 @@ import {
 import { auth } from "../utils/firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { PHOTO } from "../utils/constants";
 import { getAuthErrorMessage } from "../utils/firebaseErrors";
 import toast from "react-hot-toast"; // ✅ Toasts
 import lang from "../utils/languageConstants";
@@ -48,7 +47,6 @@ const Login = () => {
           const user = userCredential.user;
           updateProfile(user, {
             displayName: nameVal,
-            photoURL: PHOTO,
           })
             .then(() => {
               const { uid, displayName, email, photoURL } = auth.currentUser;

@@ -9,6 +9,7 @@ import { toggleSearchView } from "../utils/searchSlice";
 import { SUPPORTED_LANGUAGES } from "../utils/constants";
 import { changeLanguage } from "../utils/configSlice";
 import lang from "../utils/languageConstants";
+import defaultUserPhoto from "../assets/user.jpg";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -110,7 +111,7 @@ const Header = () => {
           {/* Profile */}
           <div className="relative">
             <img
-              src={user?.photoURL}
+              src={user?.photoURL || defaultUserPhoto}
               alt="user"
               className="w-8 h-8 sm:w-10 sm:h-10 rounded-full cursor-pointer border border-gray-300"
               onClick={toggleMenu}
