@@ -27,3 +27,6 @@ yarn-error.log*
 .firebaserc
 
 .env
+
+.env.development
+.env.production
