@@ -1,10 +1,10 @@
 import { lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
 
-// ✅ Lazy-load MovieList for code splitting
+// Lazy-load MovieList for code splitting
 const MovieList = lazy(() => import("./MovieList"));
 
-// ✅ Simple shimmer fallback
+// Simple shimmer fallback
 const MovieListFallback = ({ title }) => (
   <div className="px-6 py-4 animate-pulse">
     <h1 className="text-gray-500 text-lg md:text-2xl font-semibold mb-2">

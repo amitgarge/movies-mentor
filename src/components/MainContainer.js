@@ -1,11 +1,11 @@
 import { lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
 
-// ✅ Lazy load the large video components
+// Lazy load the large video components
 const VideoTitle = lazy(() => import("./VideoTitle"));
 const VideoBackground = lazy(() => import("./VideoBackGround"));
 
-// ✅ Simple fallback while the components load
+// Simple fallback while the components load
 const FallbackVideoLoader = () => (
   <div className="relative w-full h-screen flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-400 text-gray-600 animate-pulse">
     Loading featured movie...
@@ -28,7 +28,7 @@ const MainContainer = () => {
 
   return (
     <div className="relative w-full h-screen">
-      {/* ✅ Suspense for lazy-loaded video components */}
+      {/* Suspense for lazy-loaded video components */}
       <Suspense fallback={<FallbackVideoLoader />}>
         <VideoBackground movieId={id} />
         <VideoTitle title={original_title} overview={overview} />

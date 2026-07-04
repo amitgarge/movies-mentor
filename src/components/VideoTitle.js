@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import lang from "../utils/languageConstants";
 
 const VideoTitle = ({ title, overview }) => {
-  const langKey = useSelector((store) => store.config.lang); // ✅ current language
+  const langKey = useSelector((store) => store.config.lang); // current language
 
   return (
     <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center px-4 sm:px-8 lg:px-12 bg-gradient-to-r from-black/80 z-10 text-white">

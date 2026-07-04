@@ -10,7 +10,7 @@ import { auth } from "../utils/firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { getAuthErrorMessage } from "../utils/firebaseErrors";
-import toast from "react-hot-toast"; // ✅ Toasts
+import toast from "react-hot-toast"; // Toasts
 import lang from "../utils/languageConstants";
 
 const Login = () => {
@@ -24,7 +24,7 @@ const Login = () => {
   const email = useRef(null);
   const password = useRef(null);
 
-  // ✅ Toast IDs to prevent duplicates
+  // Toast IDs to prevent duplicates
   const LOGIN_SUCCESS_TOAST_ID = "login-success";
   const SIGNUP_SUCCESS_TOAST_ID = "signup-success";
 
@@ -33,7 +33,7 @@ const Login = () => {
     const passVal = password.current?.value;
     const nameVal = isSignInForm ? null : name.current?.value;
 
-    // ✅ Basic validation
+    // Basic validation
     const message = checkValidData(emailVal, passVal, nameVal);
     setErrorMessage(message);
     if (message) return;
@@ -41,7 +41,7 @@ const Login = () => {
     setLoading(true);
 
     if (!isSignInForm) {
-      // ✅ Sign Up flow
+      // Sign Up flow
       createUserWithEmailAndPassword(auth, emailVal, passVal)
         .then((userCredential) => {
           const user = userCredential.user;
@@ -68,11 +68,11 @@ const Login = () => {
         })
         .finally(() => setLoading(false));
     } else {
-      // ✅ Sign In flow
+      // Sign In flow
       signInWithEmailAndPassword(auth, emailVal, passVal)
         .then(() => {
           console.log("Toast fired from Login.js");
-          toast.success("✅ " + lang[langKey].signedIn, {
+          toast.success("" + lang[langKey].signedIn, {
             id: LOGIN_SUCCESS_TOAST_ID,
           });
         })

@@ -1,13 +1,13 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Toaster } from "react-hot-toast"; // ✅ for consistent toast support
+import { Toaster } from "react-hot-toast"; // for consistent toast support
 import Demo from "./Demo";
 
-// ✅ Lazy-load routes
+// Lazy-load routes
 const Login = lazy(() => import("./Login"));
 const Browse = lazy(() => import("./Browse"));
 
-// ✅ Reusable fallback component
+// Reusable fallback component
 const PageFallback = () => (
   <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-blue-200 text-gray-700 text-lg font-medium">
     Loading Movie Mentor...

@@ -3,7 +3,7 @@ import MovieCard from "./MovieCard";
 import ShimmerMovieCard from "./ShimmerMovieCard";
 
 const MovieList = ({ title, movies }) => {
-  // ✅ useMemo prevents recalculating mapped movies on each render
+  // useMemo prevents recalculating mapped movies on each render
   const renderedMovies = useMemo(() => {
     if (!movies) {
       // Loading state shimmer placeholders
@@ -17,7 +17,7 @@ const MovieList = ({ title, movies }) => {
       return <p className="text-gray-500">No movies available</p>;
     }
 
-    // ✅ Main list rendering
+    // Main list rendering
     return movies.map((movie) => (
       <div className="snap-start" key={movie?.id}>
         <MovieCard posterPath={movie.poster_path} />
@@ -38,5 +38,5 @@ const MovieList = ({ title, movies }) => {
   );
 };
 
-// ✅ Memoize the component to prevent re-rendering unless props change
+// Memoize the component to prevent re-rendering unless props change
 export default memo(MovieList);

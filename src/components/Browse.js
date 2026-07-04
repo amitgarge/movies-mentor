@@ -6,12 +6,12 @@ import useTopRatedMovies from "../hooks/useTopRatedMovies";
 import useUpcomingMovies from "../hooks/useUpcomingMovies";
 import Header from "./Header";
 
-// ✅ Lazy load heavy components
+// Lazy load heavy components
 const MainContainer = lazy(() => import("./MainContainer"));
 const SecondaryContainer = lazy(() => import("./SecondaryContainer"));
 const Search = lazy(() => import("./Search"));
 
-// ✅ Simple fallback shimmer/spinner (shown while component loads)
+// Simple fallback shimmer/spinner (shown while component loads)
 const FallbackLoader = () => (
   <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-blue-200">
     <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -29,7 +29,7 @@ const Browse = () => {
   return (
     <div>
       <Header />
-      {/* ✅ Suspense handles component loading fallback */}
+      {/* Suspense handles component loading fallback */}
       <Suspense fallback={<FallbackLoader />}>
         {showSearch ? (
           <Search />

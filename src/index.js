@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Toaster } from "react-hot-toast";
 
-// ✅ Mount the custom Toaster FIRST, before App
+// Mount the custom Toaster FIRST, before App
 const toasterRoot = document.createElement("div");
 document.body.appendChild(toasterRoot);
 
@@ -31,7 +31,7 @@ toasterRootContainer.render(
   />
 );
 
-// ✅ Then mount the main App
+// Then mount the main App
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
